@@ -1,5 +1,7 @@
 import xssFilters from "xss-filters";
 
+export const CONTEXT_ID = "context"
+
 export class PreloadedDataHydrator {
   public id: string;
 
@@ -52,4 +54,4 @@ export class PreloadedDataHydrator {
   }
 }
 
-export const context = new PreloadedDataHydrator(Math.random().toString());
+export const context = new PreloadedDataHydrator(CONTEXT_ID);

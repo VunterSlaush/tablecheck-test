@@ -1,35 +1,37 @@
-import { createContext, useContext } from "react";
-import { MenuItem } from "../../../types";
-import { useMutableState } from "../../utils/useMutableState";
+import {createContext, useContext} from "react";
+import {MenuItem} from "../../../types";
+import {useMutableState} from "../../utils/useMutableState";
 
 type MenuContextApi = {
-  items: MenuItem[];
+    items: MenuItem[];
 };
 
-const context = createContext<MenuContextApi | null>(null);
+const context = createContext<MenuContextApi | null>({
+    items: []
+});
 
 export function useMenu() {
-  const ctx = useContext(context);
-  if (ctx === null) {
-    throw new Error("Menu context not found");
-  }
-  return ctx;
+    const ctx = useContext(context);
+    if (ctx === null) {
+        throw new Error("Menu context not found");
+    }
+    return ctx;
 }
 
 export function Provider({
-  children,
-  value,
-}: {
-  children: JSX.Element | JSX.Element[];
-  value: MenuItem[];
+                             children,
+                             value,
+                         }: {
+    children: JSX.Element | JSX.Element[];
+    value: MenuItem[];
 }) {
-  const [state, setState] = useMutableState({
-    items: value,
-  });
+    const [state, setState] = useMutableState({
+        items: value,
+    });
 
-  const api: MenuContextApi = {
-    ...state,
-  };
+    const api: MenuContextApi = {
+        ...state,
+    };
 
-  return <context.Provider value={api}>{children}</context.Provider>;
+    return <context.Provider value={api}>{children}</context.Provider>;
 }
