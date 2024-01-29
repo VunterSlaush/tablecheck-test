@@ -27,7 +27,7 @@ export class Server {
       .use(bodyParser.json())
       .use(cors())
       .post("/mock", this.mock.bind(this))
-      .get("/unmock", this.unmock.bind(this))
+      .post("/unmock", this.unmock.bind(this))
       .get("/teardown", this.teardown.bind(this))
       .use("*", this.handler.bind(this));
   }
@@ -91,7 +91,7 @@ export class Server {
   }
 
   private mock(req: Request, res: Response): void {
-    this.interceptors.set(req.body.key || Date.now().toString(), [
+    this.interceptors.set(req.body.key, [
       (_req: Request) => {
         const match = new Matchers(_req, req.body.match);
         return match.isMethodMatch && match.isPathMatch;

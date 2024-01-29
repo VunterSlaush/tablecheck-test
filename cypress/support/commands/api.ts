@@ -15,7 +15,7 @@ declare global {
   }
 }
 
-Cypress.Commands.add("mock", (match, producer, key) =>
+Cypress.Commands.add("mock", (match, producer) =>
   cy.then(async () => {
     const [method, path, statusCode] = match.split(" ");
     const response = client[match](producer);
@@ -23,7 +23,7 @@ Cypress.Commands.add("mock", (match, producer, key) =>
     await axios.post("/mock", {
       match: { method, path, statusCode },
       response,
-      key,
+      key: match,
     });
   })
 );
