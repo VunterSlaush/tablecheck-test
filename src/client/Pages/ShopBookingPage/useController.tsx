@@ -1,7 +1,7 @@
 import {useMenu, useShop} from "../../App";
-import {PartySizeList} from "../../Components/PartySizeList";
 import {useMutableState} from "../../utils/useMutableState";
 import {PartySize} from "./PartySize";
+import PartySizeModal from "./PartySizeModal";
 
 type Controller = {
     title: string;
@@ -33,10 +33,12 @@ export function useController(): Controller {
 
     const renderModal = () => {
         return (
-            <dialog open={state.isCTAOpen} data-testid="Party Size Modal">
-                <PartySizeList partySize={state.partySize}/>
-                <button onClick={closeCTA}>close</button>
-            </dialog>
+            <PartySizeModal
+                open={state.isCTAOpen}
+                close={closeCTA}
+                shop={shop.config}
+                menu={menu.items}
+            />
         );
     }
 

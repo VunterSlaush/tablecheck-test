@@ -5,5 +5,7 @@ type Props = {
 };
 
 export const PartySizeList = ({ partySize }: Props): JSX.Element => {
-  return <div data-testid="Party Size List"></div>;
+  return <div data-testid="Party Size List">
+  Set the Party Size!
+  </div>;
 };

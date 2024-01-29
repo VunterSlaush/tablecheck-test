@@ -15,9 +15,7 @@ class Server {
         this.server
             .use(
                 "/public",
-                express.static(path.join(__dirname, "../public"), {
-                    maxAge: 60 * 60 * 1000,
-                })
+                express.static(path.join(__dirname, "../public"))
             )
             .get("/:shop/book", this.bookingHandler.bind(this));
     }
@@ -60,6 +58,7 @@ class Server {
                 shop,
                 menu,
             };
+
             const markup = renderToString(<App store={store}/>);
             const html = this.interpolate(markup, req.params.shop, store);
 

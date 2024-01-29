@@ -1,4 +1,4 @@
-import { cy, describe, it } from "local-cypress";
+import { cy, describe, it, after } from "local-cypress";
 import { client } from "../support/client.generated";
 
 const ids = {
@@ -24,6 +24,11 @@ describe("page load", () => {
 });
 
 describe("reservation: party size", () => {
+  after(() => {
+    cy.unmock("get /shops/:id 200")
+    cy.unmock("get /shops/:id/menu 200")
+  })
+
   it("should respect min and max totals across all age groups", () => {
     cy.mock("get /shops/:id 200", (draft) => {
       draft.minNumPeople = 3;
@@ -68,7 +73,7 @@ describe("reservation: party size", () => {
     });
 
     cy.getByTestId(ids.ADULTS, ids.COUNTER.SUBTRACT).click();
-    cy.getByTestId(ids.ADULTS, ids.COUNTER.SUBTRACT).click();
+    cy.getByTestId(ids.SENIORS, ids.COUNTER.SUBTRACT).click();
     [ids.ADULTS, ids.CHILDREN, ids.BABIES, ids.SENIORS].forEach((testid) => {
       cy.getByTestId(testid, ids.COUNTER.SUBTRACT).should("be.disabled");
     });
@@ -96,16 +101,23 @@ describe("reservation: party size", () => {
 
     cy.mock("get /shops/:id/menu 200", (draft) => {
       draft.splice(0, draft.length);
-      draft.push(
-        client["get /shops/:shop/menu 200"]((item) => {
-          item.isGroupOrder = true;
-          item.minOrderQty = 2;
-        }),
-        client["get /shops/:shop/menu 200"]((item) => {
-          item.isGroupOrder = true;
-          item.maxOrderQty = 5;
-        })
-      );
+
+      draft[0] = {
+        description: "a tasty burger",
+        id:111,
+        isGroupOrder: true,
+        minOrderQty: 2,
+        title:"hamburger",
+      }
+
+      draft[1] = {
+        description: "a tasty burger",
+        id:112,
+        isGroupOrder: true,
+        maxOrderQty: 5,
+        title:"hamburger",
+      }
+
     });
 
     cy.visit("/test/book");
