@@ -144,3 +144,50 @@ describe("reservation: party size", () => {
     });
   });
 });
+
+describe("generate: empty producer", () => {
+  after(() => {
+    cy.unmock("get /shops/:id 200")
+    cy.unmock("get /shops/:id/menu 200")
+  })
+
+  it("should run with default mocks", () => {
+
+    const notProducedShop = client["get /shops/:id 200"]()
+
+    cy.mock("get /shops/:id 200", (draft) => {
+      draft.slug = notProducedShop["slug"]
+      draft.showBaby = notProducedShop["showBaby"];
+      draft.showChild = notProducedShop["showChild"];
+      draft.showSenior = notProducedShop["showSenior"];
+    });
+
+    cy.mock("get /shops/:id/menu 200");
+
+    cy.visit("/test/book");
+
+    cy.getByTestId(ids.CTA).click();
+
+    cy.getByTestId("Shop Title").should("contain", "welcome to "+notProducedShop["slug"]);
+
+    const existentSelectors = [];
+
+    if(notProducedShop["showBaby"]) existentSelectors.push(ids.BABIES);
+    if(notProducedShop["showChild"]) existentSelectors.push(ids.CHILDREN);
+    if(notProducedShop["showSenior"]) existentSelectors.push(ids.SENIORS);
+    
+    existentSelectors.forEach((testid) => {
+      cy.get(`[data-testid="${testid}"] select`).should("have.value", "0");
+    });
+
+    [ids.ADULTS, ...existentSelectors].forEach((testid) => {
+      cy.getByTestId(testid, ids.COUNTER.SUBTRACT).should("be.disabled");
+    });
+
+    [ids.ADULTS, ...existentSelectors].forEach((testid) => {
+      cy.getByTestId(testid, ids.COUNTER.ADD).should("not.be.disabled");
+    });
+
+  });
+
+});

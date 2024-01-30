@@ -101,15 +101,25 @@ export class OASClientFromSpec {
             ])
           ),
         ]),
-        b.variableDeclaration("const", [
+        b.variableDeclaration("let", [
           b.variableDeclarator(
             b.identifier("result"),
-            b.callExpression(b.identifier("produce"), [
-              b.identifier("faked"),
-              b.identifier("producer"),
-            ])
+            b.identifier("faked")
           ),
         ]),
+        b.ifStatement(b.identifier("producer"), b.blockStatement([
+
+            b.expressionStatement(
+                b.assignmentExpression("=",
+                    b.identifier("result"),
+                    b.callExpression(b.identifier("produce"), [
+                        b.identifier("faked"),
+                        b.identifier("producer"),
+                    ])
+                )
+            )
+
+        ])),
         b.returnStatement(b.identifier("result")),
       ])
     );

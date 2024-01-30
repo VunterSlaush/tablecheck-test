@@ -9,13 +9,13 @@ const axios = ax.create({
 declare global {
   namespace Cypress {
     interface Chainable {
-      mock: (match: string, producer: any, key?: string) => Chainable;
+      mock: (match: string, producer?: any, key?: string) => Chainable;
       unmock: (key: string) => Chainable;
     }
   }
 }
 
-Cypress.Commands.add("mock", (match, producer) =>
+Cypress.Commands.add("mock", (match, producer?) =>
   cy.then(async () => {
     const [method, path, statusCode] = match.split(" ");
     const response = client[match](producer);
