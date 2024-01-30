@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {PartySizeList} from "../../Components/PartySizeList";
-import Counter from "./Counter";
-import {useMutableState} from "../../utils/useMutableState";
-import {PartySize} from "./PartySize";
+import Counter from "../../Components/Counter";
+import {PartySize} from "../../domain/PartySize";
 import {MenuItem, Shop} from "../../../types";
 
 type Props = {
@@ -10,10 +9,10 @@ type Props = {
     close: () => void
     shop: Shop,
     menu: MenuItem[]
-
+    onChange: (PartySize) => void
 };
 
-export default function PartySizeModal({open, close, shop, menu}: Props) {
+export default function PartySizeModal({open, close, shop, menu, onChange}: Props) {
 
     const [state, setState] = useState(new PartySize(shop, menu));
 
@@ -22,9 +21,21 @@ export default function PartySizeModal({open, close, shop, menu}: Props) {
         setState(newPartySize);
     }
 
+    const onClose = () => {
+        setState(new PartySize(shop, menu))
+        close()
+    }
+
+    const change = () => {
+        onChange(state);
+        onClose()
+    }
+
     return (
         <dialog open={open} data-testid="Party Size Modal">
-            <PartySizeList partySize={state}/>
+            <h4 style={{margin: "4px"}}>
+                Set the Party Size!
+            </h4>
             <Counter
                 title={"Party Size List Adults Counter"}
                 value={state.adult}
@@ -32,9 +43,9 @@ export default function PartySizeModal({open, close, shop, menu}: Props) {
                 validNextMove={val => state.validMove("adult", val)}
             />
             {shop.showSenior && <Counter title={"Party Size List Seniors Counter"}
-                                                value={state.senior}
-                                                onValueChange={onChangeCounter("senior")}
-                                                validNextMove={val => state.validMove("senior", val)}
+                                         value={state.senior}
+                                         onValueChange={onChangeCounter("senior")}
+                                         validNextMove={val => state.validMove("senior", val)}
             />}
             {shop.showChild && <Counter
                 title={"Party Size List Children Counter"}
@@ -48,7 +59,8 @@ export default function PartySizeModal({open, close, shop, menu}: Props) {
                 onValueChange={onChangeCounter("baby")}
                 validNextMove={val => state.validMove("baby", val)}
             ></Counter>}
-            <button onClick={close}>close</button>
+            <button onClick={onClose}>close</button>
+            <button disabled={!state.isValidParty()} onClick={change}>Set</button>
         </dialog>
     );
 }

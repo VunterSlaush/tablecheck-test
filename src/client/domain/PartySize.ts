@@ -1,6 +1,4 @@
-import {MenuItem, Shop} from "../../../types";
-import {Simulate} from "react-dom/test-utils";
-import copy = Simulate.copy;
+import {MenuItem, Shop} from "../../types";
 
 
 export class PartySize {
@@ -37,11 +35,11 @@ export class PartySize {
         return copy;
     }
 
-    private isValidParty(): boolean {
+    isValidParty(): boolean {
         const min = this.getMin();
         const max = this.getMax();
         const sum = this.sumValues()
-        return (sum >= 0 && sum <= min) || (max >= sum && sum >= min);
+        return sum >= min && sum <= max;
     }
 
     public validMove(selector: string, value: number): boolean {

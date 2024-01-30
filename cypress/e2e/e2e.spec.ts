@@ -175,7 +175,7 @@ describe("generate: empty producer", () => {
     if(notProducedShop["showBaby"]) existentSelectors.push(ids.BABIES);
     if(notProducedShop["showChild"]) existentSelectors.push(ids.CHILDREN);
     if(notProducedShop["showSenior"]) existentSelectors.push(ids.SENIORS);
-    
+
     existentSelectors.forEach((testid) => {
       cy.get(`[data-testid="${testid}"] select`).should("have.value", "0");
     });
